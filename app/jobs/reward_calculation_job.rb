@@ -5,6 +5,7 @@ class RewardCalculationJob < ApplicationJob
     points = Point.where(user_id: user.id, created_at: Time.now.beginning_of_month..Time.now.end_of_month)
     total_score = points.pluck(:score).sum
 
+    # If the end user accumulates 100 points in one calendar month they are given a Free Coffee reward
     if total_score >= 100
       UserReward.create(user_id: user.id, reward_id: Reward.coffee.first.id)
     end
@@ -17,7 +18,7 @@ class RewardCalculationJob < ApplicationJob
     end
   end
 
-
+  # Free Coffee reward is given to all users during their birthday month
   def date_of_birth_reward_calculation
     users = User.where(date_of_birth: Time.now.beginning_of_month..Time.now.end_of_month)
     users.find_each do |user|
@@ -25,6 +26,7 @@ class RewardCalculationJob < ApplicationJob
     end
   end
 
+  # 5% Cash Rebate reward is given to all users who have 10 or more transactions that have an amount > $100
   def transaction_reward_calculation
     users = User.joins(:bills).group('users.id').having('count(bills.id) >= 10')
     user.find_each do |user|
@@ -35,6 +37,7 @@ class RewardCalculationJob < ApplicationJob
     end
   end
 
+  # Points expire every year
   def expire_points
     Point.destroy_all
   end

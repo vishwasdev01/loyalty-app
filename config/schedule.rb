@@ -9,10 +9,12 @@ every 1.day do
   runner "RewardCalculationJob.new.transaction_reward_calculation"
 end
 
+# Points expire every year
 every 1.year, :at => 'December 31th 11:59pm' do
   runner "RewardCalculationJob.new.expire_points"
 end
 
+# Every calendar quarterly give 100 bonus points for any user spending greater than $2000 in that quarter
 every 3.months, :at => '11:59pm' do
   runner "RewardCalculationJob.new.bonus_points"
 end

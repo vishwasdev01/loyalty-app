@@ -3,6 +3,12 @@ class Bill < ApplicationRecord
 
   after_create :update_user_points, :free_movie_ticket
 
+  scope :within_60_days, -> { where('created_at >= ?', 60.days.ago) }
+
+  def self.total_spending_within_60_days_for_user(user)
+    user.bills.within_60_days.sum(:amount)
+  end
+
   private
 
   def update_user_points
@@ -18,10 +24,9 @@ class Bill < ApplicationRecord
     Point.create(user_id: user.id, score: points)
   end
 
-  def free_movie_ticket
-    bills = Bill.where(user_id: user.id)
-
-    if (bills.count.eql?(1)) && (self.amount > 1000)
+  # Free Movie Tickets reward is given to new users when their spending is > $1000 within 60 days of their first transaction
+  def free_movie_ticket    
+    if created_at >= 60.days.ago && Bill.total_spending_within_60_days_for_user(user) > 1000
       UserReward.create(user_id: user.id, reward_id: Reward.movie_ticket.first&.id)
     end
   end
