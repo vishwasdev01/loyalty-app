@@ -1,0 +1,33 @@
+<%= link_to "Create User", new_user_registration_path, class: "btn btn-primary btn-lg float-end mt-5" %><br><br>
+
+<%= form_tag users_path, :method => 'get' do %>
+  <p>
+    <%= text_field_tag :user_search, params[:user_search] %>
+    <%= submit_tag "Search", :name => nil %>
+  </p>
+<% end %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Email</th>
+      <th scope="col">Full Name</th>
+      <th scope="col">Phone Number</th>
+      <th scope="col"> Reward Points</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @users.each_with_index do |user, i| %>
+      <tr>
+        <th scope="row"><%= i + 1 %></th>
+        <td><%= user.email%></td>
+        <td><%= user.full_name %></td>
+        <td><%= user.phone_number %></td>
+        <td><%= user.points %></td>
+        <td><%= link_to "Create Billing", new_bill_path(id: user.id) %></td>
+      </tr>
+  <% end %>  
+  </tbody>
+</table>
+<%= link_to "Log out ", destroy_user_session_path, method: :delete, class: "text-right btn btn-primary" %>

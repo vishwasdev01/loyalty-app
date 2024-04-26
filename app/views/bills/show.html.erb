@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @bill.amount %>
+</p>
+
+<p>
+  <strong>Foreign country:</strong>
+  <%= @bill.foreign_country %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @bill.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_bill_path(@bill) %> |
+<%= link_to 'Back', bills_path %>
